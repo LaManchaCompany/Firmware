@@ -1,0 +1,19 @@
+1) donner du fuel (init_fuel = x)
+2) initialisé la tache à son état 0 si besoin (task_state = 0)
+3) donner un nombre d'essais max (max_try = x) 
+4) enabler la tache (flag = 0)
+
+ensuite:
+
+à l'appel de la fonction, 
+La tâche consomme du fuel à chaque appel, 
+La tâche consomme un try à chaque fois que le fuel est consommé 
+La tâche retourne : (Suivant l'état d'exécution)
+
+// BOURS_TASK_SUCCESS		0
+// BOURS_TASK_IN_PROGRESS	1
+// BOURS_TASK_DISABLED		2
+// BOURS_TASK_ERROR		3
+
+La tâche s'arrete lorsque le nombre d'essais maximum est atteint (donc après (max_try x init_fuel) ) 
+

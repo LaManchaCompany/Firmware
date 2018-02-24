@@ -76,6 +76,15 @@ struct Command comm;
 ///////////////////////////////////////////
 
 
+///////////////////////////////////////////
+// SCHEDULEUR 
+///////////////////////////////////////////
+Stack_function_t stack_gobelet_task;
+P_Stack_function_t P_gobelet_stack = &stack_gobelet_task;
+///////////////////////////////////////////
+
+
+
 int main (void)
 {
 	
@@ -245,6 +254,12 @@ int main (void)
 			if(compare_string("COCK", code_commande,4, 0) == 1 )
 			{
 				udi_cdc_write_buf ("CACK\r", 5);
+				P_gobelet_stack->flag = 1;
+				P_gobelet_stack->init_fuel = 1000;
+				P_gobelet_stack->max_try = 3;
+				
+				Function_caller(P_gobelet_stack, give_me_a_gob);
+	
 			}
 			
 			//error_gob = give_me_a_gob(max_try_gob_count,time_out_gob);

@@ -90,17 +90,15 @@ char read_gobelet_sensor_3()
 // return:
 // BOURS_TASK_SUCCESS		0
 // BOURS_TASK_IN_PROGRESS	1
-// BOURS_TASK_ERROR			2
-
-#define TRIG_STATE					0
-#define WAIT_FALLING_EDGE_STATE		1
-#define WAIT_RISING_EDGE_STATE		2
-
-
+// BOURS_TASK_DISABLED		2
+// BOURS_TASK_ERROR			3
 uint8_t give_me_a_gob( P_Stack_function_t P_Stack ) 
 {
-
-	if(P_Stack->flag == 1) /* Task enabled */
+	if(P_Stack->flag == 0) /* Task disabled */
+	{
+		return BOURS_TASK_DISABLED;	// return with BOURS_TASK_DISABLED code
+	}
+	else if(P_Stack->flag == 1) /* Task enabled */
 	{
 		if(P_Stack->current_try <= P_Stack->max_try) /* Wy maybe havent tried too many time  */
 		{
@@ -115,7 +113,7 @@ uint8_t give_me_a_gob( P_Stack_function_t P_Stack )
 			if(P_Stack->current_fuel == 0) /* We have tried too much time (during one try) */
 			{
 				P_Stack->task_state = TRIG_STATE;			// trig after that
-				P_Stack->current_fuel = P_Stack->max_fuel;	// reset fuel
+				P_Stack->current_fuel = P_Stack->init_fuel;	// reset fuel
 				return BOURS_TASK_IN_PROGRESS;				// return with BOURS_TASK_IN_PROGRESS code
 			}
 			
