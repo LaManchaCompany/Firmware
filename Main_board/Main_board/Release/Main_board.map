@@ -59,7 +59,7 @@ Discarded input sections
  .text.read_gobelet_sensor_3
                 0x00000000        0xa gobelet.o
  .text.give_me_a_gob
-                0x00000000        0x4 gobelet.o
+                0x00000000        0x2 gobelet.o
  .data.P_Stack_gobelet
                 0x00000000        0x2 gobelet.o
  COMMON         0x00000000        0xe gobelet.o

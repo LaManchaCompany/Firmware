@@ -93,10 +93,11 @@ uint8_t give_me_a_gob( P_Stack_function_t P_Stack_gobelet )
 	
 	uint8_t timer_gob =0;
 	uint8_t try_gob_count = 0;
-	uint8_t error_gob= 0;
+	uint8_t error_gob= 1;
 			// SUCCESS			0
 			// IN_PROGRESS		1
 			// ERROR			2
+			//
 	uint8_t state_gob =0;
 	
 					
