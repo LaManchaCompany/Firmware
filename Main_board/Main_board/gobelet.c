@@ -13,9 +13,8 @@
 #define Sensor2		PIN5_bm //5
 #define Sensor3		PIN4_bm //4
 
-/* Variable Stack pour le Bours_scheduler */
-Stack_function_t Stack_gobelet; 
-P_Stack_function_t P_Stack_gobelet = &Stack_gobelet;
+
+
 
 
 init_gobelet()
@@ -87,106 +86,97 @@ char read_gobelet_sensor_3()
 }
 
 // GIVE ME A GOB
-uint8_t give_me_a_gob( P_Stack_function_t P_Stack_gobelet ) 
+
+// return:
+// BOURS_TASK_SUCCESS		0
+// BOURS_TASK_IN_PROGRESS	1
+// BOURS_TASK_ERROR			2
+
+#define TRIG_STATE					0
+#define WAIT_FALLING_EDGE_STATE		1
+#define WAIT_RISING_EDGE_STATE		2
+
+
+uint8_t give_me_a_gob( P_Stack_function_t P_Stack ) 
 {
-	
-	
-	uint8_t timer_gob =0;
-	uint8_t try_gob_count = 0;
-	uint8_t error_gob= 1;
-			// SUCCESS			0
-			// IN_PROGRESS		1
-			// ERROR			2
-			//
-	uint8_t state_gob =0;
-	
-					
-/*	
-	while(try_gob_count < max_try+1)
+
+	if(P_Stack->flag == 1) /* Task enabled */
 	{
-		if(try_gob_count == max_try)
+		if(P_Stack->current_try <= P_Stack->max_try) /* Wy maybe havent tried too many time  */
 		{
-			error_gob = 1;
-			break;
-		}
-		
-		switch(state_gob)
-		{
-			
-			
-			case 0: //trig
-			
-			trig_gobelet();
-			try_gob_count ++;
-			state_gob = 1;
-			
-			break;
-			
-			case 1: // wait falling edge
-			
-			timer_gob = 0;
-			state_gob = 2; // wait rising edge after that
-			
-			while( read_gobelet_sensor_1()==1  )
-			{
-			
-				if (timer_gob >= time_out)
-				{
-					
-					
-					// time out
-					state_gob = 0; // try again
-					break;
-				}
-				timer_gob ++;
-				_delay_ms(100);
-				
+			if(P_Stack->current_try == P_Stack->max_try) /* We have tried too many time */
+			{	
+				P_Stack->flag = 0;			// disable task
+				P_Stack->current_fuel = 0;	// consume fuel
+				P_Stack->current_try = 0;	// reset try count 
+				return BOURS_TASK_ERROR;	// return error code
 			}
 			
-			
-			
-			break;
-			
-			
-			
-			case 2: // wait rising edge
-			
-			timer_gob = 0;
-			error_gob = 0; // success
-			state_gob = 3; // end after that
-			
-			
-			while( read_gobelet_sensor_1()==0  )
+			if(P_Stack->current_fuel == 0) /* We have tried too much time (during one try) */
 			{
-				
-				if (timer_gob >= time_out)
-				{
-					// time out
-					
-					error_gob = 2; // error rising edge time out
-					break;
-				}
-				timer_gob ++;
-				_delay_ms(100);
-				
+				P_Stack->task_state = TRIG_STATE;			// trig after that
+				P_Stack->current_fuel = P_Stack->max_fuel;	// reset fuel
+				return BOURS_TASK_IN_PROGRESS;				// return with BOURS_TASK_IN_PROGRESS code
 			}
 			
-			
-			
-			
-			break;
-			
-			case 3: // end
-				return error_gob;
-			break;
-		}
 		
+			switch(P_Stack->task_state)
+			{
+				case TRIG_STATE: //trig
+					trig_gobelet();
+					P_Stack->current_try ++;
+					P_Stack->task_state = WAIT_FALLING_EDGE_STATE;
+					return BOURS_TASK_IN_PROGRESS;		// return with BOURS_TASK_IN_PROGRESS code
+				break;
+			
+				case WAIT_FALLING_EDGE_STATE: // wait falling edge
+	
+					if(read_gobelet_sensor_1()==1)
+					{
+						P_Stack->task_state = WAIT_FALLING_EDGE_STATE; // wait falling edge after that
+						P_Stack->current_fuel --;			// consume one fuel
+						return BOURS_TASK_IN_PROGRESS;		// return with BOURS_TASK_IN_PROGRESS code
+					}
+					else if(read_gobelet_sensor_1()==0)
+					{
+						P_Stack->task_state = WAIT_RISING_EDGE_STATE; // wait rising edge after that
+						P_Stack->current_fuel --;			// consume one fuel
+						return BOURS_TASK_IN_PROGRESS;		// return with BOURS_TASK_IN_PROGRESS code
+					}
+
+				break;
+	
+				case WAIT_RISING_EDGE_STATE: // wait rising edge
+			
+					if(read_gobelet_sensor_1()==0)
+					{
+						P_Stack->task_state = WAIT_RISING_EDGE_STATE; // wait rising edge after that
+						P_Stack->current_fuel --;			// consume one fuel
+						return BOURS_TASK_IN_PROGRESS;		// return with BOURS_TASK_IN_PROGRESS code
+					}
+					else if(read_gobelet_sensor_1()==1)
+					{
+						// Success ! 
+						P_Stack->flag = 0;			// disable task
+						P_Stack->current_fuel = 0;	// consume fuel
+						P_Stack->current_try = 0;	// reset try count
+						return BOURS_TASK_SUCCESS;	// return with BOURS_TASK_SUCCESS code
+					}
+				break;
+
+			}
+		
+		
+		
+		}
+	
+		
+	
 		
 		
 	}
-	
-	*/
-	
+					
+
 }
 
 		

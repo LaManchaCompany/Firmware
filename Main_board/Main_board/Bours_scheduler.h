@@ -24,17 +24,21 @@
   */
 
 
-#define SUCCESS			0
-#define IN_PROGRESS		1
-#define ERROR			2
+#define BOURS_TASK_SUCCESS			0
+#define BOURS_TASK_IN_PROGRESS		1
+#define BOURS_TASK_ERROR			2
 
 
 
 // Stack , variable permettant aux fonctions appelée par le "scheduler" de garder leur état en vie entre chaque appel
 typedef struct Stack_function
 {
-	uint8_t flag;							
-	uint8_t fuel;    
+	uint8_t flag;	
+	uint8_t max_fuel;  						
+	uint8_t current_fuel;
+	uint8_t max_try;
+	uint8_t current_try;
+	uint8_t task_state;
 	uint8_t variable1;
 	uint8_t variable2;
 	uint8_t data_table[10];
