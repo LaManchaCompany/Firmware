@@ -100,9 +100,9 @@ uint8_t give_me_a_gob( P_Stack_function_t P_Stack )
 	}
 	else if(P_Stack->flag == 1) /* Task enabled */
 	{
-		if(P_Stack->current_try <= P_Stack->max_try) /* Wy maybe havent tried too many time  */
+		if(P_Stack->current_try <= P_Stack->max_try +1) /* Wy maybe havent tried too many time  */
 		{
-			if(P_Stack->current_try == P_Stack->max_try) /* We have tried too many time */
+			if(P_Stack->current_try == P_Stack->max_try +1) /* We have tried too many time */
 			{	
 				P_Stack->flag = 0;			// disable task
 				P_Stack->current_fuel = 0;	// consume fuel

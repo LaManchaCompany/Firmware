@@ -70,6 +70,7 @@ SUBDIRS :=  \
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS +=  \
 ../ADC_Servo.c \
+../Bours_pump.c \
 ../Bours_scheduler.c \
 ../gobelet.c \
 ../main.c \
@@ -101,6 +102,7 @@ ASM_SRCS +=
 
 OBJS +=  \
 ADC_Servo.o \
+Bours_pump.o \
 Bours_scheduler.o \
 gobelet.o \
 main.o \
@@ -125,6 +127,7 @@ src/ASF/common/boards/user_board/init.o
 
 OBJS_AS_ARGS +=  \
 ADC_Servo.o \
+Bours_pump.o \
 Bours_scheduler.o \
 gobelet.o \
 main.o \
@@ -149,6 +152,7 @@ src/ASF/common/boards/user_board/init.o
 
 C_DEPS +=  \
 ADC_Servo.d \
+Bours_pump.d \
 Bours_scheduler.d \
 gobelet.d \
 main.d \
@@ -173,6 +177,7 @@ src/ASF/common/boards/user_board/init.d
 
 C_DEPS_AS_ARGS +=  \
 ADC_Servo.d \
+Bours_pump.d \
 Bours_scheduler.d \
 gobelet.d \
 main.d \
@@ -209,6 +214,8 @@ LINKER_SCRIPT_DEP+=
 
 
 # AVR32/GNU C Compiler
+
+
 
 
 

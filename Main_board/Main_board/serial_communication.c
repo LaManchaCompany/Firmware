@@ -21,9 +21,7 @@ struct Command get_next_command(char* command_code,uint8_t* data, uint8_t time_o
 	comm.data_lenght =0;
 	//comm.datas =0;
 	comm.code = 0; 
-	
-	
-	
+
 	uint8_t timer = 0;
 	uint8_t error_serial_communication= 0;
 		//  0: sucess
@@ -49,7 +47,7 @@ struct Command get_next_command(char* command_code,uint8_t* data, uint8_t time_o
 			concat_string(vect_lenght,cdc_buf,cdc_number_byte_received, vect);	// concatenate every bytes into a vector
 			vect_lenght = vect_lenght + cdc_number_byte_received;							// bytes count 
 			
-			//udi_cdc_write_buf (vect, offset);
+			
 			//itoa(offset,chars,10);
 			//udi_cdc_write_buf (chars, 2);
 			

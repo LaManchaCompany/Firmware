@@ -64,7 +64,7 @@ main.d main.o: .././main.c ../src/asf.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\math.h \
  .././src/Soft_I2C.h .././src/Soft_SPI.h .././src/RC522.h \
  .././ADC_Servo.h ../src/LT2449.h .././neo_pixel.h .././gobelet.h \
- .././Bours_scheduler.h .././serial_communication.h
+ .././Bours_scheduler.h .././Bours_pump.h .././serial_communication.h
 
 ../src/asf.h:
 
@@ -221,5 +221,7 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\
 .././gobelet.h:
 
 .././Bours_scheduler.h:
+
+.././Bours_pump.h:
 
 .././serial_communication.h:

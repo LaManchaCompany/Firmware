@@ -14,4 +14,4 @@ void trig_gobelet();
 char read_gobelet_sensor_1();
 char read_gobelet_sensor_2();
 char read_gobelet_sensor_3();
-uint8_t give_me_a_gob(P_Stack_function_t P_Stack); // time out in 0.1 sec
+uint8_t give_me_a_gob(P_Stack_function_t P_Stack); // non-blocking Bours-schedulable task

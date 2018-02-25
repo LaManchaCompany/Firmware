@@ -49,6 +49,7 @@
 #include "LT2449.h"
 #include "neo_pixel.h"
 #include "gobelet.h"
+#include "Bours_pump.h"
 #include "serial_communication.h"
 
 #include "interrupt.h"
@@ -81,13 +82,19 @@ struct Command comm;
 ///////////////////////////////////////////
 Stack_function_t stack_gobelet_task;
 P_Stack_function_t P_gobelet_stack = &stack_gobelet_task;
+
+Stack_function_t stack_cocktail_task;
+P_Stack_function_t P_cocktail_stack = &stack_cocktail_task;
+
+
 ///////////////////////////////////////////
 
 
 
 int main (void)
 {
-	
+	P_cocktail_stack->variable1 = 0;
+	P_cocktail_stack->task_state = 0;
 	PORTF.DIRSET = 0b00000111;
 	
 	/* Insert system clock initialization code here (sysclk_init()). */
@@ -144,7 +151,7 @@ int main (void)
 		
 		/////////////////////////////////////////////////////////////////////////////
 		//I2C ------------- PUMP OUTPUT ------------
-		//Soft_I2C_init()
+		Soft_I2C_init();
 		/////////////////////////////////////////////////////////////////////////////
 		
 		
@@ -162,9 +169,9 @@ int main (void)
 				uint8_t r=0;
 				uint8_t g=0;
 				uint8_t b=0;
-		uint8_t buf_r;
+				uint8_t buf_r;
 				uint8_t buf_g;
-						uint8_t buf_b;
+				uint8_t buf_b;
 		/*
 		init_neo_pixel();
 
@@ -175,7 +182,7 @@ int main (void)
 		/////////////////////////////////////////////////////////////////////////////
 		//I/O ------------- Gobelet board ------------
 		
-		init_gobelet();
+		//init_gobelet();
 		uint8_t error_gob =0;
 		//  0: success
 		//  1: max try count error
@@ -248,20 +255,48 @@ int main (void)
 			//	trig_gobelet();
 				
 
-			
-			comm = get_next_command(code_commande,NULL,10);
-			
-			if(compare_string("COCK", code_commande,4, 0) == 1 )
+			if(udi_cdc_is_rx_ready() != 0)
 			{
-				udi_cdc_write_buf ("CACK\r", 5);
-				P_gobelet_stack->flag = 1;
-				P_gobelet_stack->init_fuel = 1000;
-				P_gobelet_stack->max_try = 3;
+				// we have received datas
+				 comm = get_next_command(code_commande,NULL,10);
+					udi_cdc_write_buf (code_commande, 4);
+			}
+
+			
+			
+			// ici dans le code commande , un CICK ou un COCK s'incruste.
+			// et le code commande n'est jamais mis à zero, a faire.
+			if(compare_string("CICK", code_commande,4, 0) == 1 )
+			{
+				udi_cdc_write_buf("CACK\r", 5);
 				
-				Function_caller(P_gobelet_stack, give_me_a_gob);
+			/*	1) donner du fuel (init_fuel = x)
+				2) initialisé la tache à son état 0 si besoin (task_state = 0)
+				3) donner un nombre d'essais max (max_try = x)
+				4) enabler la tache (flag = 1) */
+			
+				//P_gobelet_stack->init_fuel = 1000;
+				//P_gobelet_stack->task_state = 0;
+				//P_gobelet_stack->max_try = 3;
+				//P_gobelet_stack->flag = 1;
+				//give_me_a_gob(P_gobelet_stack);
+				
+				// P_Stack->variable1 = pump binary mask
+				// P_Stack->data_table[0 -> 7] pumps on-times
+				// P_Stack->flag = task enabled or not
+				
+				P_cocktail_stack->flag = 1;
+				
+				
+				P_cocktail_stack->data_table[0] = 100;
+				P_cocktail_stack->data_table[7] = 200;
+				
+				
 	
 			}
 			
+			pumps_on_off(P_cocktail_stack); // pas au point !, debuguer 
+			udi_cdc_write_buf(P_cocktail_stack->variable1, 1); // variable ne change pas (elle devrait)
 			//error_gob = give_me_a_gob(max_try_gob_count,time_out_gob);
 		
 /////////////////////////////////////////////////////////////////////////////

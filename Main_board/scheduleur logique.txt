@@ -1,7 +1,7 @@
 1) donner du fuel (init_fuel = x)
 2) initialisé la tache à son état 0 si besoin (task_state = 0)
 3) donner un nombre d'essais max (max_try = x) 
-4) enabler la tache (flag = 0)
+4) enabler la tache (flag = 1)
 
 ensuite:
 
